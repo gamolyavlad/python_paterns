@@ -1,6 +1,6 @@
 """
-Define an interface for creating an object , but let subclasses decide which class to instantiate. Factory Method lets
-a class defer instantiation to subclasses
+Define an interface for creating an object , but let subclasses decide which class to instantiate.
+Factory Method lets a class defer instantiation to subclasses
 """
 
 
@@ -15,59 +15,63 @@ class Genre(object):
 
 
 class Adventure(Genre):
-    def drive(self): print("Adventure class")
+    def drive(self):
+        print("Adventure class")
 
 
 class Drama(Genre):
-    def drive(self): print("Drana class.")
+    def drive(self):
+        print("Drana class.")
 
-
-obj = Genre.factory("Adventure")
-obj.drive()
+"""Example from book"""
 
 
 class Culture:
-   def __repr__(self):
-       return self.__str__()
+    def __repr__(self):
+        return self.__str__()
 
 
 class Democracy(Culture):
-   def __str__(self):
-       return 'Democracy'
+    def __str__(self):
+        return 'Democracy'
 
 
 class Dictatorship(Culture):
-   def __str__(self):
-       return 'Dictatorship'
+    def __str__(self):
+        return 'Dictatorship'
 
 
 class Government:
-   culture = ''
+    culture = ''
 
-   def __str__(self):
-       return self.culture.__str__()
+    def __str__(self):
+        return self.culture.__str__()
 
-   def __repr__(self):
-       return self.culture.__repr__()
+    def __repr__(self):
+        return self.culture.__repr__()
 
-   def set_culture(self):
-       raise AttributeError('Not Implemented Culture')
+    def set_culture(self):
+        raise AttributeError('Not Implemented Culture')
 
 
 class GovernmentA(Government):
-   def set_culture(self):
-       self.culture = Democracy()
+    def set_culture(self):
+        self.culture = Democracy()
 
 
 class GovernmentB(Government):
-   def set_culture(self):
-       self.culture = Dictatorship()
+    def set_culture(self):
+        self.culture = Dictatorship()
 
 
-g1 = GovernmentA()
-g1.set_culture()
-print (str(g1))
+if __name__ == "__main__":
+    obj = Genre.factory("Adventure")
+    obj.drive()
 
-g2 = GovernmentB()
-g2.set_culture()
-print (str(g2))
+    g1 = GovernmentA()
+    g1.set_culture()
+    print(str(g1))
+
+    g2 = GovernmentB()
+    g2.set_culture()
+    print(str(g2))

@@ -1,4 +1,4 @@
-# Python supports named parameters, so builder doesn`t make any sence . You can just define a class's constructor
+""" Python supports named parameters, so builder doesn`t make any sence . """
 
 from collections import namedtuple
 
@@ -40,14 +40,8 @@ my_builder.required_function = lambda x: x - 1
 obj3 = my_builder.build()
 
 print(obj1)
-# prints "OrderedDict([('required_function_result', 3), ('required_parameter', 2), ('default_parameter', 'foo')])"
 print(obj1.required_function_result)
-# prints 3
 print(obj1.foo_property)
-# prints 5
 print(obj1.foo_function())
-# prints 1
 print(obj2)
-# prints "OrderedDict([('required_function_result', 2), ('required_parameter', 1), ('default_parameter', 'bar')])"
 print(obj3)
-# prints "OrderedDict([('required_function_result', 0), ('required_parameter', 1), ('default_parameter', 'bar')])"

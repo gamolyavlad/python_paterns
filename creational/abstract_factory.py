@@ -1,5 +1,13 @@
+"""
+The abstract factory pattern provides a way to encapsulate a group of individual factories that have a common theme
+without specifying their concrete classes.[1] In normal usage, the client software creates a concrete implementation of
+the abstract factory and then uses the generic interface of the factory to create the concrete objects that are part of
+the theme
+"""
+
+
 class Product(object):
-    def __init__(self, name='iPhone', price=0.0, expiration_date=None, out_of_stock=False):
+    def __init__(self, name='iPhone', price=600.0, expiration_date=None, out_of_stock=False):
         self.name = name
         self.price = price
         self.expiration_date = expiration_date
@@ -33,7 +41,7 @@ class Phone(Product):
 class InternetShop(Shop):
     def __init__(self, *args, **kwargs):
         self.availiable_product = []
-        iphone = Product('iPhone', '620')
+        iphone = Product('iPhone', 900)
         self.availiable_product.append(iphone.name)
 
     def get_availiable_product(self, product):
