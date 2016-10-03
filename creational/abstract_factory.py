@@ -49,6 +49,6 @@ class InternetShop(Shop):
             return product
         raise Exception('Product doesn`t availiable ')
 
-
-order = Order(Phone, InternetShop)
-print(order.get_order())
+if __name__ == 'main':
+    order = Order(Phone, InternetShop)
+    print(order.get_order())
