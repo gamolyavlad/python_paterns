@@ -1,6 +1,3 @@
-from __future__ import print_function
-
-
 def count_to(count):
     """Counts by word numbers, up to a maximum of five"""
     numbers = ["one", "two", "three", "four", "five"]
@@ -8,6 +5,7 @@ def count_to(count):
     # defaults to 0) and the values obtained from iterating over sequence
     for pos, number in zip(range(count), numbers):
         yield number
+
 
 # Test the generator
 count_to_two = lambda: count_to(2)

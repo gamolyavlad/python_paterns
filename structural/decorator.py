@@ -9,11 +9,11 @@ def main_function(text):
 
 def decorate(func):
     def func_wrapper(name):
-        return "Before  {0}   After".format(func(name))
+        return "Before : {}".format(func(name))
 
     return func_wrapper
 
 
 my_get_text = decorate(main_function)
 
-print(my_get_text("John"))
+print(my_get_text("Main text"))

@@ -1,15 +1,16 @@
+#!/usr/bin/python
 """
 Compose objects into tree structures to represent part-whole hierarchies. Composite lets clients treat individual
 objects and compositions of objects uniformly.
 """
-#  Created using diagramm
+
 
 class Component(object):
     def __init__(self, *args, **kw):
         pass
 
     def component_function(self):
-        pass
+        raise NotImplemented
 
 
 class Leaf(Component):
@@ -17,7 +18,7 @@ class Leaf(Component):
         Component.__init__(self, *args, **kw)
 
     def component_function(self):
-        print("some function")
+        print("component_function {}".format(self))
 
 
 class Composite(Component):
@@ -32,14 +33,17 @@ class Composite(Component):
         self.children.remove(child)
 
     def component_function(self):
-        map(lambda x: x.component_function(), self.children)
+        [x.component_function() for x in self.children]
 
 
-c = Composite()
-l = Leaf()
-l_two = Leaf()
-l_three = Leaf()
-c.append_child(l)
-c.append_child(l_two)
-c.append_child(l_three)
-print(c.children)
+if __name__ == "__main__":
+    composite = Composite()
+    l = Leaf()
+    l_two = Leaf()
+    l_three = Leaf()
+    composite.append_child(l)
+    print(composite.children)
+    composite.append_child(l_two)
+    composite.append_child(l_three)
+    print(composite.children)
+    composite.component_function()

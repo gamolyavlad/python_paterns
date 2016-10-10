@@ -1,134 +1,53 @@
-import time
-import os
-import sys
-from contextlib import contextmanager
-
-class Handler:
-    def __init__(self, successor=None):
-        self._successor = successor
-    def handle(self, request):
-        res = self._handle(request)
-        if not res:
-            self._successor.handle(request)
-    def _handle(self, request):
-        raise NotImplementedError('Must provide implementation in subclass.')
+"""
+ In object-oriented design, the chain-of-responsibility pattern is a design pattern consisting of a source of command
+ objects and a series of processing objects. Each processing object contains logic that defines the types of command
+ objects that it can handle; the rest are passed to the next processing object in the chain. A mechanism also exists for
+ adding new processing objects to the end of this chain.
+"""
 
 
-class ConcreteHandler1(Handler):
-
-    def _handle(self, request):
-        if 0 < request <= 10:
-            print('request {} handled in handler 1'.format(request))
-            return True
-
-class ConcreteHandler2(Handler):
-
-    def _handle(self, request):
-        if 10 < request <= 20:
-            print('request {} handled in handler 2'.format(request))
-            return True
-
-class ConcreteHandler3(Handler):
-
-    def _handle(self, request):
-        if 20 < request <= 30:
-            print('request {} handled in handler 3'.format(request))
-            return True
-class DefaultHandler(Handler):
-
-    def _handle(self, request):
-        print('end of chain, no handler for {}'.format(request))
-        return True
-
-
-class Client:
+class Car:
     def __init__(self):
-        self.handler = ConcreteHandler1(ConcreteHandler3(ConcreteHandler2(DefaultHandler())))
-    def delegate(self, requests):
-        for request in requests:
-            self.handler.handle(request)
+        self.name = None
+        self.km = 11100
+        self.fuel = 5
+        self.oil = 5
 
 
-def coroutine(func):
-    def start(*args, **kwargs):
-        cr = func(*args, **kwargs)
-        next(cr)
-        return cr
-    return start
+def handle_fuel(car):
+    if car.fuel < 10:
+        print("added fuel")
+        car.fuel = 100
 
-@coroutine
-def coroutine1(target):
-    while True:
-        request = yield
-        if 0 < request <= 10:
-            print('request {} handled in coroutine 1'.format(request))
-        else:
-            target.send(request)
 
-@coroutine
-def coroutine2(target):
-    while True:
-        request = yield
-        if 10 < request <= 20:
-            print('request {} handled in coroutine 2'.format(request))
-        else:
-            target.send(request)
+def handle_km(car):
+    if car.km > 10000:
+        print("made a car test.")
+        car.km = 0
 
-@coroutine
-def coroutine3(target):
-    while True:
-        request = yield
-        if 20 < request <= 30:
-            print('request {} handled in coroutine 3'.format(request))
-        else:
-            target.send(request)
 
-@coroutine
-def default_coroutine():
-        while True:
-            request = yield
-            print('end of chain, no coroutine for {}'.format(request))
+def handle_oil(car):
+    if car.oil < 10:
+        print("Added oil")
+        car.oil = 100
 
-class ClientCoroutine:
+
+class Garage:
     def __init__(self):
-        self.target = coroutine1(coroutine3(coroutine2(default_coroutine())))
+        self.handlers = []
 
-    def delegate(self, requests):
-        for request in requests:
-            self.target.send(request)
+    def add_handler(self, handler):
+        self.handlers.append(handler)
 
-def timeit(func):
-
-    def count(*args, **kwargs):
-        start = time.time()
-        res = func(*args, **kwargs)
-        count._time = time.time() - start
-        return res
-    return count
-
-@contextmanager
-def suppress_stdout():
-    try:
-        stdout, sys.stdout = sys.stdout, open(os.devnull, 'w')
-        yield
-    finally:
-        sys.stdout = stdout
+    def handle_car(self, car):
+        for handler in self.handlers:
+            handler(car)
 
 
-if __name__ == "__main__":
-    client1 = Client()
-    client2 = ClientCoroutine()
-    requests = [2, 5, 14, 22, 18, 3, 35, 27, 20]
+if __name__ == '__main__':
+    handlers = [handle_fuel, handle_km, handle_oil]
+    garage = Garage()
 
-    client1.delegate(requests)
-    print('-'*30)
-    client2.delegate(requests)
-
-    requests *= 10000
-    client1_delegate = timeit(client1.delegate)
-    client2_delegate = timeit(client2.delegate)
-    with suppress_stdout():
-        client1_delegate(requests)
-        client2_delegate(requests)
-    # lets check what is faster
-    print(client1_delegate._time, client2_delegate._time)
+    for handle in handlers:
+        garage.add_handler(handle)
+    garage.handle_car(Car())

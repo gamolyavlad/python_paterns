@@ -1,48 +1,51 @@
-import os
-from os.path import lexists
+"""
+ The command pattern is an Object behavioural pattern that decouples sender and receiver. It can also be thought as an
+ object oriented equivalent of call back method. Call Back: It is a function that is registered to be called at later
+ point of time based on user actions.
+"""
 
 
-class MoveFileCommand(object):
-    def __init__(self, src, dest):
-        self.src = src
-        self.dest = dest
+class Switch(object):
+    """The INVOKER class"""
 
-    def execute(self):
-        self.rename(self.src, self.dest)
-
-    def undo(self):
-        self.rename(self.dest, self.src)
-
-    def rename(self, src, dest):
-        print('renaming {} to {}'.format(src, dest))
-        os.rename(src, dest)
+    def __init__(self, flip_up_cmd, flip_down_cmd):
+        self.flip_up = flip_up_cmd
+        self.flip_down = flip_down_cmd
 
 
-def main():
-    command_stack = []
+class Light(object):
+    """The RECEIVER class"""
 
-    # commands are just pushed into the command stack
-    command_stack.append(MoveFileCommand('foo.txt', 'bar.txt'))
-    command_stack.append(MoveFileCommand('bar.txt', 'baz.txt'))
+    def turn_on(self):
+        print("The light is on")
 
-    # verify that none of the target files exist
-    assert (not lexists("foo.txt"))
-    assert (not lexists("bar.txt"))
-    assert (not lexists("baz.txt"))
-    try:
-        with open("foo.txt", "w"):  # Creating the file
-            pass
-
-        # they can be executed later on
-        for cmd in command_stack:
-            cmd.execute()
-
-        # and can also be undone at will
-        for cmd in reversed(command_stack):
-            cmd.undo()
-    finally:
-        os.unlink("foo.txt")
+    def turn_off(self):
+        print("The light is off")
 
 
+class LightSwitch(object):
+    """The CLIENT class"""
+
+    def __init__(self):
+        lamp = Light()
+        self._switch = Switch(lamp.turn_on, lamp.turn_off)
+
+    def switch(self, cmd):
+        cmd = cmd.strip().upper()
+        if cmd == "ON":
+            self._switch.flip_up()
+        elif cmd == "OFF":
+            self._switch.flip_down()
+        else:
+            print('Argument "ON" or "OFF" is required.')
+
+
+# Execute if this file is run as a script and not imported as a module
 if __name__ == "__main__":
-    main()
+    light_switch = LightSwitch()
+    print("Switch ON test.")
+    light_switch.switch("ON")
+    print("Switch OFF test.")
+    light_switch.switch("OFF")
+    print("Invalid Command test.")
+    light_switch.switch("****")
